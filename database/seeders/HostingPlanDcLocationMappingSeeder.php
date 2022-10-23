@@ -2,11 +2,11 @@
 
 namespace Database\Seeders;
 
-use App\Models\DataCenterLocation;
-use App\Models\HostingPlan;
+use App\Models\CartItem;
+use App\Models\Cart;
 use Illuminate\Database\Seeder;
 
-class HostingPlanDcLocationMappingSeeder extends Seeder
+class CartDcLocationMappingSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -15,8 +15,8 @@ class HostingPlanDcLocationMappingSeeder extends Seeder
      */
     public function run()
     {
-        $hostingPlans = HostingPlan::all();
-        $dcLocations = DataCenterLocation::all()->pluck('id');
+        $hostingPlans = Cart::all();
+        $dcLocations = CartItem::all()->pluck('id');
 
         foreach ($hostingPlans as $hostingPlan) {
             $hostingPlan->dcLocation()->attach($dcLocations);

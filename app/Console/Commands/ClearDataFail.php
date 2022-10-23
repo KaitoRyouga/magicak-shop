@@ -63,13 +63,13 @@ class ClearDataFail extends Command
             }
 
             if ($value->remote_domain_id == null) {
-                $userWebsite = $value->userWebsite;
-                if (count($userWebsite) > 0) {
-                    $transaction = $userWebsite[0]->transaction;
+                $product = $value->product;
+                if (count($product) > 0) {
+                    $transaction = $product[0]->transaction;
                     if (count($transaction) > 0) {
                         $transaction[0]->forceDelete();
                     }
-                    $userWebsite[0]->forceDelete();
+                    $product[0]->forceDelete();
                 }
                 $value->forceDelete();
             }

@@ -6,10 +6,10 @@ use App\Models\Template;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
-use App\Managers\UserWebsiteManager;
+use App\Managers\ProductManager;
 use App\Managers\DomainManager;
 
-class UserWebsiteSeeder extends Seeder
+class ProductSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -20,7 +20,7 @@ class UserWebsiteSeeder extends Seeder
     {
         DB::table('user_websites')->insert([
             [
-                'status' => UserWebsiteManager::STATUS_INITIAL,
+                'status' => ProductManager::STATUS_INITIAL,
                 'business_name' => 'test1',
                 'template_id' => 1,
                 'template_name' => Template::find(1)->name,
@@ -34,7 +34,7 @@ class UserWebsiteSeeder extends Seeder
                 'updated_at' => Carbon::now(),
             ],
             [
-                'status' => UserWebsiteManager::STATUS_INITIAL,
+                'status' => ProductManager::STATUS_INITIAL,
                 'business_name' => 'test2',
                 'template_id' => 2,
                 'template_name' => Template::find(2)->name,

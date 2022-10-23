@@ -22,9 +22,9 @@ class TransactionHistory extends Model
     /**
      * Get user website
      */
-    public function userWebsite()
+    public function product()
     {
-        return $this->belongsTo(UserWebsite::class, 'relation_id', 'id');
+        return $this->belongsTo(Product::class, 'relation_id', 'id');
     }
 
     /**

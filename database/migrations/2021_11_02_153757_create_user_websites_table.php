@@ -3,9 +3,9 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use App\Managers\UserWebsiteManager;
+use App\Managers\ProductManager;
 
-class CreateUserWebsitesTable extends Migration
+class CreateProductsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -25,7 +25,7 @@ class CreateUserWebsitesTable extends Migration
             $table->unsignedBigInteger('website_message_id')->nullable();
             $table->string('business_name');
             $table->string('current_tasks')->nullable()->comment('create_web, up_dns');
-            $table->enum('status', UserWebsiteManager::STATUSES)->default(UserWebsiteManager::STATUS_INITIAL);
+            $table->enum('status', ProductManager::STATUSES)->default(ProductManager::STATUS_INITIAL);
             $table->string('template_name')->index()->nullable();
             $table->string('template_code')->index()->nullable();
             $table->string('template_version')->nullable();

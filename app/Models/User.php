@@ -68,6 +68,6 @@ class User extends Authenticatable
      */
     public function websites()
     {
-        return $this->hasMany(UserWebsite::class, 'user_id');
+        return $this->hasMany(Product::class, 'user_id');
     }
 }

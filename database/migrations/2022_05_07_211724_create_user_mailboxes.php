@@ -3,7 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use App\Managers\UserWebsiteManager;
+use App\Managers\ProductManager;
 
 class CreateUserMailboxes extends Migration
 {
@@ -19,7 +19,7 @@ class CreateUserMailboxes extends Migration
             $table->id();
             $table->string('mailbox_domain')->nullable();
             $table->string('mailbox_url')->nullable();
-            $table->enum('status', UserWebsiteManager::STATUSES)->default(UserWebsiteManager::STATUS_INITIAL);
+            $table->enum('status', ProductManager::STATUSES)->default(ProductManager::STATUS_INITIAL);
             $table->float('mailbox_size')->nullable()->comment('GB');
             $table->timestamp('mailbox_created_date')->nullable();
             $table->timestamp('mailbox_expired_date')->nullable();

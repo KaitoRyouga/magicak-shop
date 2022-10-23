@@ -6,7 +6,7 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 
-class HostingPlanPriceSeeder extends Seeder
+class CartPriceSeeder extends Seeder
 {
     /**
      * Run the database seeds.

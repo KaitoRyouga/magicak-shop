@@ -3,11 +3,11 @@
 namespace Database\Seeders;
 
 use App\Models\HostingCluster;
-use App\Models\HostingPlan;
+use App\Models\Cart;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class HostingPlanClusterMappingSeeder extends Seeder
+class CartClusterMappingSeeder extends Seeder
 {
     /**
      * Run the database seeds.

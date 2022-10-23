@@ -15,16 +15,16 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             UserSeeder::class,
-            DataCenterLocationSeeder::class,
+            CartItemSeeder::class,
             SystemDomainSeeder::class,
             HostingPlatformSeeder::class,
             HostingClusterSeeder::class,
             DomainTypeSeeder::class,
             PaymentMethodSeeder::class,
-            HostingPlanTypeSeeder::class,
-            HostingPlanSeeder::class,
-            HostingPlanPriceSeeder::class,
-            HostingPlanDcLocationMappingSeeder::class,
+            CartTypeSeeder::class,
+            CartSeeder::class,
+            CartPriceSeeder::class,
+            CartDcLocationMappingSeeder::class,
             TemplateTypeSeeder::class,
             TemplateCategorySeeder::class,
             TemplateSeeder::class,
@@ -32,8 +32,8 @@ class DatabaseSeeder extends Seeder
             UserAttributeSeeder::class,
             SettingSeeder::class,
             DomainSeeder::class,
-            UserWebsiteSeeder::class,
-            HostingPlanClusterMappingSeeder::class,
+            ProductSeeder::class,
+            CartClusterMappingSeeder::class,
             TransactionTypeSeeder::class,
             TemporaryDomainSeeder::class
         ]);

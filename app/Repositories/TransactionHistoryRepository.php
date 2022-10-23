@@ -40,7 +40,7 @@ class TransactionHistoryRepository extends BaseRepository
             'transactionType',
             'paymentMethod',
             'createdUser',
-            'userWebsite' => function ($query) {
+            'product' => function ($query) {
                 $query->with([
                     'hostingPlan' => function ($query) {
                         $query->with([

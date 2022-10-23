@@ -20,7 +20,7 @@ class ApiUserController extends ApiController
     protected $userManager;
 
     /**
-     * ApiUserWebsiteController constructor.
+     * ApiProductController constructor.
      * @param UserManager $userManager
      */
     public function __construct(UserManager $userManager)
@@ -420,11 +420,11 @@ class ApiUserController extends ApiController
     {
         try {
 
-            // $userWebsite = $this->userManager->getUserWebsiteById(1);
+            // $product = $this->userManager->getProductById(1);
 
-            // if ($userWebsite) {
+            // if ($product) {
             //     // push message to rabbit mq
-            //     $this->userManager->pushPythonMessageData($userWebsite);
+            //     $this->userManager->pushPythonMessageData($product);
             // }
             $data = [
                 'website_id' => 1

@@ -34,14 +34,9 @@ class PaymentTransactionManager extends BaseManager
     protected $payPal;
 
     /**
-     * @var DomainManager
+     * @var CartManager
      */
-    protected $domainManager;
-
-    /**
-     * @var UserWebsiteManager
-     */
-    protected $userWebsiteManager;
+    protected $cartManager;
 
 
     /**
@@ -50,22 +45,20 @@ class PaymentTransactionManager extends BaseManager
      * @param TransactionHistoryRepository $transactionHistoryRepository
      * @param PayPal $payPal
      * @param DomainManager $domainManager
-     * @param UserWebsiteManager $userWebsiteManager
+     * @param ProductManager $productManager
      */
     public function __construct(
         PaymentMethodRepository $paymentMethodRepository,
         TransactionHistoryRepository $transactionHistoryRepository,
         PayPal $payPal,
-        DomainManager $domainManager,
-        UserWebsiteManager $userWebsiteManager
+        ProductManager $productManager
     ) {
         $this->paymentMethodRepository = $paymentMethodRepository;
         $this->transactionHistoryRepository = $transactionHistoryRepository;
         $this->paypal = $payPal;
         $this->paypal->setApiCredentials(config('paypal'));
         $this->paypal->setAccessToken($this->paypal->getAccessToken());
-        $this->domainManager = $domainManager;
-        $this->userWebsiteManager = $userWebsiteManager;
+        $this->productManager = $productManager;
     }
 
     /**
@@ -86,29 +79,26 @@ class PaymentTransactionManager extends BaseManager
     {
         Stripe\Stripe::setApiKey(config('stripe.secret_key'));
 
-        $userWebsite = $this->userWebsiteManager->getUserWebsiteById($data['user_website_id']);
+        $cart = $this->cartManager->getCart()['data'];
 
         $dataStripe = Stripe\Charge::create([
-            'amount' => $userWebsite->total_price * 100,
+            'amount' => $cart->total * 100,
             'currency' => config('stripe.currency'),
             'source' => $data['stripeToken'],
-            'description' => 'Order by user id ' . $userWebsite->created_id
+            'description' => 'Order by user id ' . $cart->created_id
         ]);
 
-        // update user website status
-        $userWebsite->current_tasks = $this->userWebsiteManager::CURRENT_TASK_CREATE_WEBSITE;
-        $userWebsite->status = $this->userWebsiteManager::STATUS_INITIAL;
-        $userWebsite->save();
+
 
         return $this->createTransactionHistory([
-            'relation_id' => $userWebsite->id,
+            'cart_id' => $cart->id,
             'transaction_type_id' => self::TRANSACTION_TYPE_USER_WEBSITE,
             'order_id' => $dataStripe->id,
             'payment_method_id' => self::PAYMENT_METHOD_STRIPE,
-            'amount' => $userWebsite->total_price,
+            'amount' => $cart->total,
             'currency' => config('stripe.currency'),
             'active' => 1,
-            'created_id' => $userWebsite->created_id
+            'created_id' => $cart->created_id
         ]);
     }
 
@@ -153,24 +143,24 @@ class PaymentTransactionManager extends BaseManager
     {
         Stripe\Stripe::setApiKey(config('stripe.secret_key'));
 
-        $userWebsite = $this->userWebsiteManager->getUserWebsiteById($data['user_website_id']);
+        $product = $this->productManager->getProductById($data['user_website_id']);
 
         $dataStripe = Stripe\Charge::create([
-            'amount' => $userWebsite->total_price * 100,
+            'amount' => $product->total_price * 100,
             'currency' => config('stripe.currency'),
             'source' => $data['stripeToken'],
-            'description' => 'Order by user id ' . $userWebsite->created_id
+            'description' => 'Order by user id ' . $product->created_id
         ]);
 
         return $this->createTransactionHistory([
-            'relation_id' => $userWebsite->id,
+            'relation_id' => $product->id,
             'transaction_type_id' => self::TRANSACTION_TYPE_UPGRADE_PLAN,
             'order_id' => $dataStripe->id,
             'payment_method_id' => self::PAYMENT_METHOD_STRIPE,
-            'amount' => $userWebsite->total_price,
+            'amount' => $product->total_price,
             'currency' => config('stripe.currency'),
             'active' => 1,
-            'created_id' => $userWebsite->created_id
+            'created_id' => $product->created_id
         ]);
     }
 
@@ -180,7 +170,7 @@ class PaymentTransactionManager extends BaseManager
      */
     public function createPaypalOrder(array $data)
     {
-        $userWebsite = $this->userWebsiteManager->getUserWebsiteById($data['user_website_id']);
+        $product = $this->productManager->getProductById($data['user_website_id']);
 
         $result = $this->paypal->createOrder([
             'intent' => 'CAPTURE',
@@ -193,7 +183,7 @@ class PaymentTransactionManager extends BaseManager
                 [
                     'amount' => [
                         'currency_code' => config('paypal.currency'),
-                        'value' => $userWebsite->total_price
+                        'value' => $product->total_price
                     ]
                 ]
             ]
@@ -236,7 +226,7 @@ class PaymentTransactionManager extends BaseManager
      */
     public function createPaypalOrderUpgradePlan(array $data)
     {
-        $userWebsite = $this->userWebsiteManager->getUserWebsiteById($data['user_website_id']);
+        $product = $this->productManager->getProductById($data['user_website_id']);
 
         $result = $this->paypal->createOrder([
             'intent' => 'CAPTURE',
@@ -249,7 +239,7 @@ class PaymentTransactionManager extends BaseManager
                 [
                     'amount' => [
                         'currency_code' => config('paypal.currency'),
-                        'value' => $userWebsite->total_price
+                        'value' => $product->total_price
                     ]
                 ]
             ]
@@ -264,23 +254,23 @@ class PaymentTransactionManager extends BaseManager
      */
     public function capturePaypalOrder(array $data)
     {
-        $userWebsite = $this->userWebsiteManager->getUserWebsiteById($data['user_website_id']);
+        $product = $this->productManager->getProductById($data['user_website_id']);
         $result = $this->paypal->capturePaymentOrder($data['order_id']);
 
         // update user website status
-        $userWebsite->current_tasks = $this->userWebsiteManager::CURRENT_TASK_CREATE_WEBSITE;
-        $userWebsite->status = $this->userWebsiteManager::STATUS_INITIAL;
-        $userWebsite->save();
+        $product->current_tasks = $this->productManager::CURRENT_TASK_CREATE_WEBSITE;
+        $product->status = $this->productManager::STATUS_INITIAL;
+        $product->save();
 
         $this->createTransactionHistory([
-            'relation_id' => $userWebsite->id,
+            'relation_id' => $product->id,
             'transaction_type_id' => self::TRANSACTION_TYPE_USER_WEBSITE,
             'order_id' => $data['order_id'],
             'payment_method_id' => self::PAYMENT_METHOD_PAYPAL,
-            'amount' => $userWebsite->total_price,
+            'amount' => $product->total_price,
             'currency' => config('stripe.currency'),
             'active' => 1,
-            'created_id' => $userWebsite->created_id
+            'created_id' => $product->created_id
         ]);
 
         return $result;
@@ -318,18 +308,18 @@ class PaymentTransactionManager extends BaseManager
      */
     public function capturePaypalOrderUpgradePlan(array $data)
     {
-        $userWebsite = $this->userWebsiteManager->getUserWebsiteById($data['user_website_id']);
+        $product = $this->productManager->getProductById($data['user_website_id']);
         $result = $this->paypal->capturePaymentOrder($data['order_id']);
 
         $this->createTransactionHistory([
-            'relation_id' => $userWebsite->id,
+            'relation_id' => $product->id,
             'transaction_type_id' => self::TRANSACTION_TYPE_UPGRADE_PLAN,
             'order_id' => $data['order_id'],
             'payment_method_id' => self::PAYMENT_METHOD_PAYPAL,
-            'amount' => $userWebsite->total_price,
+            'amount' => $product->total_price,
             'currency' => config('stripe.currency'),
             'active' => 1,
-            'created_id' => $userWebsite->created_id
+            'created_id' => $product->created_id
         ]);
 
         return $result;

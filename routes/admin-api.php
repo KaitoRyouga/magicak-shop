@@ -1,8 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\ApiDataCenterLocationController;
-use App\Http\Controllers\Api\ApiHostingController;
+use App\Http\Controllers\Api\ApiCartItemController;
+use App\Http\Controllers\Api\ApiCartController;
 use App\Http\Controllers\Api\ApiTemplateController;
 use App\Http\Controllers\Api\ApiClusterController;
 use App\Http\Controllers\Api\ApiSystemDomainController;
@@ -26,19 +26,19 @@ $version = config('magicak.version');
 Route::prefix($version)->middleware(['auth:api', 'checkUser'])->name('admin-api.')->group(function () {
 
     // Locations routes
-    Route::get('data-center-locations', [ApiDataCenterLocationController::class, 'listDataCenterLocation'])->name('data-center-location.index');
-    Route::post('data-center-locations', [ApiDataCenterLocationController::class, 'createDataCenterLocation'])->name('data-center-location.store');
-    Route::put('data-center-locations/{id}', [ApiDataCenterLocationController::class, 'updateDataCenterLocation'])->name('data-center-location.update');
-    Route::delete('data-center-locations/{id}', [ApiDataCenterLocationController::class, 'deleteDataCenterLocation'])->name('data-center-location.destroy');
-    Route::get('data-center-location-dropdowns', [ApiDataCenterLocationController::class, 'listDataCenterLocationDropdowns'])->name('data-center-location.dropdown');
+    Route::get('data-center-locations', [ApiCartItemController::class, 'listCartItem'])->name('data-center-location.index');
+    Route::post('data-center-locations', [ApiCartItemController::class, 'createCartItem'])->name('data-center-location.store');
+    Route::put('data-center-locations/{id}', [ApiCartItemController::class, 'updateCartItem'])->name('data-center-location.update');
+    Route::delete('data-center-locations/{id}', [ApiCartItemController::class, 'deleteCartItem'])->name('data-center-location.destroy');
+    Route::get('data-center-location-dropdowns', [ApiCartItemController::class, 'listCartItemDropdowns'])->name('data-center-location.dropdown');
 
     // Hosting plans routes
-    Route::get('hosting-plans', [ApiHostingController::class, 'listHostingPlans'])->name('hosting-plans.index');
-    Route::post('hosting-plans', [ApiHostingController::class, 'createHostingPlans'])->name('hosting-plans.store');
-    Route::put('hosting-plans/{id}', [ApiHostingController::class, 'updateHostingPlans'])->name('hosting-plans.update');
-    Route::delete('hosting-plans/{id}', [ApiHostingController::class, 'deleteHostingPlans'])->name('hosting-plans.destroy');
-    Route::get('hosting-plan-type-dropdowns', [ApiHostingController::class, 'listHostingPlanTypeDropdowns'])->name('hosting-plan-types.dropdown');
-    Route::get('hosting-plan-platform-dropdowns', [ApiHostingController::class, 'listHostingPlanPlatformDropdowns'])->name('hosting-plan-platforms.dropdown');
+    Route::get('hosting-plans', [ApiCartController::class, 'listCarts'])->name('hosting-plans.index');
+    Route::post('hosting-plans', [ApiCartController::class, 'createCarts'])->name('hosting-plans.store');
+    Route::put('hosting-plans/{id}', [ApiCartController::class, 'updateCarts'])->name('hosting-plans.update');
+    Route::delete('hosting-plans/{id}', [ApiCartController::class, 'deleteCarts'])->name('hosting-plans.destroy');
+    Route::get('hosting-plan-type-dropdowns', [ApiCartController::class, 'listCartTypeDropdowns'])->name('hosting-plan-types.dropdown');
+    Route::get('hosting-plan-platform-dropdowns', [ApiCartController::class, 'listCartPlatformDropdowns'])->name('hosting-plan-platforms.dropdown');
 
     // Template categories routes
     Route::get('template-categories', [ApiTemplateController::class, 'listTemplateCategories'])->name('template-categories.index');
